@@ -17,9 +17,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -33,7 +31,6 @@ public class Main extends Application {
         info.setAlignment(Pos.CENTER_LEFT);
         info.setPadding(new Insets(10,10,10,10));
 
-        List<String> family = javafx.scene.text.Font.getFamilies();
         // TEXT objects
         Text stockText = new Text("Stock");
         Text numStocksText = new Text("Amount of Stock");
@@ -115,33 +112,29 @@ public class Main extends Application {
                 try {
                     doc = Jsoup.connect("https://www.marketwatch.com/investing/stock/" + stockID.getText()).get();
                 } catch (java.io.IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    return;
                 }
-                // TODO Invalid Stock or Null String Exception
-                /*if (doc == null || doc.location().equals("https://marketwatch.com/tools/quotes/lookup.asp?lookup="+stockID.getText())) {
+                if (doc.location().equals("https://www.marketwatch.com/tools/quotes/lookup.asp?lookup="+stockID.getText())) {
                     currVal.setText("N/A STOCK");
                     numChange.setText("");
                     percentChange.setText("");
                     lastUpdatedTime.setText("");
                     lastUpdatedText.setText("");
-                    triangleChange.getPoints().setAll(0.0);
+                    triangleChange.getPoints().setAll(new Double[]{0.0,0.0,0.0,0.0,0.0,0.0});
                     return;
-                }*/
+                }
                 currVal.setText("$" + WebScraper("value", doc));
                 numChange.setText(WebScraper("change--point--q", doc));
                 if (Double.parseDouble(numChange.getText()) >= 0) {
                     numChange.setFill(Color.GREEN);
                     percentChange.setFill(Color.GREEN);
-                    for (int point = 0; point < 6; point++) {
-                        triangleChange.getPoints().set(point, greenTriangle[point]);
-                    }
+                    triangleChange.getPoints().setAll(greenTriangle);
                     triangleChange.setFill(Color.GREEN);
                 } else {
                     numChange.setFill(Color.RED);
                     percentChange.setFill(Color.RED);
-                    for (int point = 0; point < 6; point++) {
-                        triangleChange.getPoints().set(point, redTriangle[point]);
-                    }
+                    triangleChange.getPoints().setAll(redTriangle);
                     triangleChange.setFill(Color.RED);
                 }
                 percentChange.setText(WebScraper("change--percent--q", doc));
