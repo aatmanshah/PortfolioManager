@@ -1,5 +1,3 @@
-package sample;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,6 +19,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Main extends Application {
 
@@ -34,7 +33,7 @@ public class Main extends Application {
         info.setAlignment(Pos.CENTER_LEFT);
         info.setPadding(new Insets(10,10,10,10));
 
-
+        List<String> family = javafx.scene.text.Font.getFamilies();
         // TEXT objects
         Text stockText = new Text("Stock");
         Text numStocksText = new Text("Amount of Stock");
@@ -69,7 +68,7 @@ public class Main extends Application {
         headlineData.setHgap(10);
         headlineData.setMinSize(200, 200);
         Text currVal = new Text();
-        currVal.setStyle("-fx-font: 35 arial");
+        currVal.setStyle("-fx-font-size: 35pt");
 
         Polygon triangleChange = new Polygon();
         triangleChange.getPoints().addAll(new Double[]{0.0,0.0,0.0,0.0,0.0,0.0});
@@ -118,6 +117,16 @@ public class Main extends Application {
                 } catch (java.io.IOException e) {
                     e.printStackTrace();
                 }
+                // TODO Invalid Stock or Null String Exception
+                /*if (doc == null || doc.location().equals("https://marketwatch.com/tools/quotes/lookup.asp?lookup="+stockID.getText())) {
+                    currVal.setText("N/A STOCK");
+                    numChange.setText("");
+                    percentChange.setText("");
+                    lastUpdatedTime.setText("");
+                    lastUpdatedText.setText("");
+                    triangleChange.getPoints().setAll(0.0);
+                    return;
+                }*/
                 currVal.setText("$" + WebScraper("value", doc));
                 numChange.setText(WebScraper("change--point--q", doc));
                 if (Double.parseDouble(numChange.getText()) >= 0) {
@@ -138,7 +147,7 @@ public class Main extends Application {
                 percentChange.setText(WebScraper("change--percent--q", doc));
 
                 LocalDateTime currTime = LocalDateTime.now();
-                lastUpdatedTime.setText(currTime.toString());
+                lastUpdatedTime.setText(TimeFormatter(currTime));
                 lastUpdatedText.setText("Last Updated: ");
             }
         });
@@ -149,6 +158,7 @@ public class Main extends Application {
         root.add(dataChart, 2, 0);
 
         Scene scene = new Scene(root);
+        scene.getStylesheets().add("style.css");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -167,5 +177,69 @@ public class Main extends Application {
             return e.text();
         }
         return "";
+    }
+
+    public static String TimeFormatter(LocalDateTime time) {
+        String rtn = "";
+        int monthNum = time.getMonthValue();
+        switch (monthNum) {
+            case 1:
+                rtn += "Jan ";
+                break;
+            case 2:
+                rtn += "Feb ";
+                break;
+            case 3:
+                rtn += "Mar ";
+                break;
+            case 4:
+                rtn += "Apr ";
+                break;
+            case 5:
+                rtn += "May ";
+                break;
+            case 6:
+                rtn += "Jun ";
+                break;
+            case 7:
+                rtn += "Jul ";
+                break;
+            case 8:
+                rtn += "Aug ";
+                break;
+            case 9:
+                rtn += "Sept ";
+                break;
+            case 10:
+                rtn += "Oct ";
+                break;
+            case 11:
+                rtn += "Nov ";
+                break;
+            case 12:
+                rtn += "Dec ";
+                break;
+        }
+        int hour = time.getHour();
+        String hourString = "";
+        String minuteString = "";
+        if (time.getMinute() < 10) {
+            minuteString += "0" + time.getMinute();
+        } else {
+            minuteString += time.getMinute();
+        }
+        if (hour == 0) {
+            hour = 12;
+            hourString = hour + ":" + minuteString + "a.m.";
+        } else if (hour == 12) {
+            hourString = hour + ":" + minuteString + "p.m.";
+        } else if (hour > 12) {
+            hour -= 12;
+            hourString = hour + ":" + minuteString + "p.m.";
+        } else {
+            hourString = hour + ":" + minuteString + "a.m.";
+        }
+        rtn += time.getDayOfMonth() + ", " + time.getYear() + " " + hourString;
+        return rtn;
     }
 }

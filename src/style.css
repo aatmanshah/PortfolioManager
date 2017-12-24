@@ -1,0 +1,9 @@
+.button {
+    -fx-background-color: #CCA43B;
+    -fx-text-fill: #FFFFFF
+}
+
+.root {
+    -fx-background-color: #E5E5E5;
+    -fx-font-family: "Georgia";
+}
