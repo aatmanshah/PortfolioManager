@@ -25,6 +25,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         primaryStage.setTitle("Portfolio Manager");
 
+        // Input TextFields Pane
         GridPane info = new GridPane();
         info.setVgap(10);
         info.setHgap(10);
@@ -41,7 +42,6 @@ public class Main extends Application {
         TextField numStocks = new TextField();
         TextField initialPrice = new TextField();
 
-
         info.add(stockText, 0, 0);
         info.add(numStocksText, 0, 1);
         info.add(initialPriceText, 0,2);
@@ -49,9 +49,8 @@ public class Main extends Application {
         info.add(numStocks, 1, 1);
         info.add(initialPrice, 1, 2);
 
-
-
         // Data Chart
+        // TODO Data Input and Scraping
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Value");
         NumberAxis xAxis = new NumberAxis();
@@ -59,13 +58,11 @@ public class Main extends Application {
         LineChart dataChart = new LineChart(xAxis,yAxis);
         dataChart.setMaxSize(500, 200);
 
-        // big Data
+        // headlineData Pane
         GridPane headlineData = new GridPane();
         headlineData.setAlignment(Pos.CENTER);
         headlineData.setHgap(10);
         headlineData.setMinSize(200, 200);
-        Text currVal = new Text();
-        currVal.setStyle("-fx-font-size: 35pt");
 
         Polygon triangleChange = new Polygon();
         triangleChange.getPoints().addAll(new Double[]{0.0,0.0,0.0,0.0,0.0,0.0});
@@ -76,6 +73,8 @@ public class Main extends Application {
 
         GridPane val = new GridPane();
         val.setAlignment(Pos.CENTER_RIGHT);
+        Text currVal = new Text();
+        currVal.setStyle("-fx-font-size: 35pt");
         val.add(currVal,0,0);
 
         GridPane change = new GridPane();
@@ -86,22 +85,15 @@ public class Main extends Application {
         change.add(percentChange,2,0);
 
         GridPane update = new GridPane();
+        update.setAlignment(Pos.CENTER_RIGHT);
         Text lastUpdatedTime = new Text();
         Text lastUpdatedText = new Text();
-
-        update.add( lastUpdatedText,0,0);
-        update.add(lastUpdatedTime,0,1);
+        update.add(lastUpdatedText,0,0);
+        update.add(lastUpdatedTime,1,0);
 
         headlineData.add(val, 0, 0);
         headlineData.add(change,0,1);
         headlineData.add(update,0,2);
-
-
-        // root GRIDPANE
-        GridPane root = new GridPane();
-        root.setMinSize(1000,500);
-        root.setGridLinesVisible(false);
-
 
         // Refresh Button
         Button refresh = new Button("Refresh");
@@ -115,6 +107,7 @@ public class Main extends Application {
                     //e.printStackTrace();
                     return;
                 }
+                // If stockID does not exist
                 if (doc.location().equals("https://www.marketwatch.com/tools/quotes/lookup.asp?lookup="+stockID.getText())) {
                     currVal.setText("N/A STOCK");
                     numChange.setText("");
@@ -146,6 +139,9 @@ public class Main extends Application {
         });
         info.add(refresh, 0, 3);
 
+        // root GRIDPANE
+        GridPane root = new GridPane();
+        root.setMinSize(1000,500);
         root.add(info,0,0);
         root.add(headlineData,1,0);
         root.add(dataChart, 2, 0);
@@ -161,6 +157,10 @@ public class Main extends Application {
         launch(args);
     }
 
+    /*
+    Web Scraping function using jsoup. Takes in a string that is the element's class, found through inspect element, and
+    the document that we are parsing through.
+     */
     public static String WebScraper(String elementClass, Document doc) {
         if (doc == null) {
             return "";
@@ -172,6 +172,9 @@ public class Main extends Application {
         return "";
     }
 
+    /*
+    Formatting function to make the last updated time more readable. Output format example: Dec 24, 2017 1:23 a.m.
+     */
     public static String TimeFormatter(LocalDateTime time) {
         String rtn = "";
         int monthNum = time.getMonthValue();
@@ -223,14 +226,14 @@ public class Main extends Application {
         }
         if (hour == 0) {
             hour = 12;
-            hourString = hour + ":" + minuteString + "a.m.";
+            hourString = hour + ":" + minuteString + " a.m.";
         } else if (hour == 12) {
-            hourString = hour + ":" + minuteString + "p.m.";
+            hourString = hour + ":" + minuteString + " p.m.";
         } else if (hour > 12) {
             hour -= 12;
-            hourString = hour + ":" + minuteString + "p.m.";
+            hourString = hour + ":" + minuteString + " p.m.";
         } else {
-            hourString = hour + ":" + minuteString + "a.m.";
+            hourString = hour + ":" + minuteString + " a.m.";
         }
         rtn += time.getDayOfMonth() + ", " + time.getYear() + " " + hourString;
         return rtn;
