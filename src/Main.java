@@ -145,6 +145,13 @@ public class Main extends Application {
                     lastUpdatedTime.setText("");
                     lastUpdatedText.setText("");
                     triangleChange.getPoints().setAll(new Double[]{0.0,0.0,0.0,0.0,0.0,0.0});
+
+                    openingPrice.setText("");
+                    dayRange.setText("");
+                    yearRange.setText("");
+                    marketCap.setText("");
+                    dividend.setText("");
+                    sharesOutstanding.setText("");
                     return;
                 }
                 Stock stock = new Stock(stockID.getText());
