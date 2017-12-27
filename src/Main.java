@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -117,9 +118,10 @@ public class Main extends Application {
                     triangleChange.getPoints().setAll(new Double[]{0.0,0.0,0.0,0.0,0.0,0.0});
                     return;
                 }
-                currVal.setText("$" + WebScraper("value", doc));
-                numChange.setText(WebScraper("change--point--q", doc));
-                if (Double.parseDouble(numChange.getText()) >= 0) {
+                Stock stock = new Stock(stockID.getText());
+                currVal.setText("$" + stock.currentPrice);
+                numChange.setText(Double.toString(stock.pointsChange));
+                if (stock.pointsChange >= 0) {
                     numChange.setFill(Color.GREEN);
                     percentChange.setFill(Color.GREEN);
                     triangleChange.getPoints().setAll(greenTriangle);
@@ -130,7 +132,7 @@ public class Main extends Application {
                     triangleChange.getPoints().setAll(redTriangle);
                     triangleChange.setFill(Color.RED);
                 }
-                percentChange.setText(WebScraper("change--percent--q", doc));
+                percentChange.setText(Double.toString(stock.percentChange) + "%");
 
                 LocalDateTime currTime = LocalDateTime.now();
                 lastUpdatedTime.setText(TimeFormatter(currTime));
@@ -139,12 +141,18 @@ public class Main extends Application {
         });
         info.add(refresh, 0, 3);
 
+        //Table of Info
+        TableView table = new TableView();
+
+
+
         // root GRIDPANE
         GridPane root = new GridPane();
         root.setMinSize(1000,500);
         root.add(info,0,0);
         root.add(headlineData,1,0);
         root.add(dataChart, 2, 0);
+
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("style.css");
@@ -155,21 +163,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    /*
-    Web Scraping function using jsoup. Takes in a string that is the element's class, found through inspect element, and
-    the document that we are parsing through.
-     */
-    public static String WebScraper(String elementClass, Document doc) {
-        if (doc == null) {
-            return "";
-        }
-        Elements vals = doc.getElementsByClass(elementClass);
-        for (Element e : vals) {
-            return e.text();
-        }
-        return "";
     }
 
     /*
