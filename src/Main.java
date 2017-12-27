@@ -118,12 +118,12 @@ public class Main extends Application {
         Text dividend = new Text();
         Text sharesOutstanding = new Text();
 
-        stockInfo.add(openingPrice,0,0);
-        stockInfo.add(dayRange,0,1);
-        stockInfo.add(yearRange,0,2);
-        stockInfo.add(marketCap,0,3);
-        stockInfo.add(dividend,0,4);
-        stockInfo.add(sharesOutstanding,0,5);
+        stockInfo.add(openingPrice,1,0);
+        stockInfo.add(dayRange,1,1);
+        stockInfo.add(yearRange,1,2);
+        stockInfo.add(marketCap,1,3);
+        stockInfo.add(dividend,1,4);
+        stockInfo.add(sharesOutstanding,1,5);
 
         // Refresh Button
         Button refresh = new Button("Refresh");
@@ -175,18 +175,20 @@ public class Main extends Application {
                 lastUpdatedText.setText("Last Updated: ");
                 name.setText(stock.name);
 
-                openingPrice.setText(Double.toString(stock.openingPrice));
-                dayRange.setText(stock.dayRange);
-                yearRange.setText(stock.yearRange);
-                marketCap.setText(stock.marketCap);
-                dividend.setText(stock.dividend);
-                sharesOutstanding.setText(stock.sharesOutstanding);
+                openingPrice.setText("Opening Price: $" + Double.toString(stock.openingPrice));
+                dayRange.setText("Day Range: " + stock.dayRange);
+                yearRange.setText("52 Week Range: " + stock.yearRange);
+                marketCap.setText("Market Cap: " + stock.marketCap);
+                dividend.setText("Dividend & Yield: " + stock.dividend);
+                sharesOutstanding.setText("Shares Outstanding: " + stock.sharesOutstanding);
             }
         });
         info.add(refresh, 0, 3);
 
         // Add stock to User stocks
-        Button AddButton = new Button("Add Stock");
+        Button addButton = new Button("Add to Portfolio");
+        info.add(addButton, 1, 3);
+
 
         //Table of User stocks
         TableView table = new TableView();
