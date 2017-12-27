@@ -7,8 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -18,6 +20,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.awt.*;
 import java.time.LocalDateTime;
 
 public class Main extends Application {
@@ -92,9 +96,17 @@ public class Main extends Application {
         update.add(lastUpdatedText,0,0);
         update.add(lastUpdatedTime,1,0);
 
-        headlineData.add(val, 0, 0);
-        headlineData.add(change,0,1);
-        headlineData.add(update,0,2);
+        GridPane stockName = new GridPane();
+        stockName.setAlignment(Pos.CENTER_RIGHT);
+        Text name = new Text();
+        name.setStyle("-fx-font-size: 14pt");
+        stockName.add(name, 0,0);
+
+
+        headlineData.add(stockName, 0, 0);
+        headlineData.add(val, 0, 1);
+        headlineData.add(change,0,2);
+        headlineData.add(update,0,3);
 
         // Refresh Button
         Button refresh = new Button("Refresh");
@@ -137,14 +149,22 @@ public class Main extends Application {
                 LocalDateTime currTime = LocalDateTime.now();
                 lastUpdatedTime.setText(TimeFormatter(currTime));
                 lastUpdatedText.setText("Last Updated: ");
+                name.setText(stock.name);
             }
         });
         info.add(refresh, 0, 3);
 
         //Table of Info
         TableView table = new TableView();
+        final Label label = new Label("Portfolio");
 
+        table.setEditable(false);
 
+        TableColumn tickerCol = new TableColumn("Stock Ticker");
+        tickerCol.setMinWidth(100);
+        tickerCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("name"));
+        
+        table.getColumns().addAll(tickerCol);
 
         // root GRIDPANE
         GridPane root = new GridPane();
@@ -152,7 +172,7 @@ public class Main extends Application {
         root.add(info,0,0);
         root.add(headlineData,1,0);
         root.add(dataChart, 2, 0);
-
+        root.add(table, 0, 1);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("style.css");

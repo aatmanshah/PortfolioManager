@@ -33,11 +33,13 @@ public class Stock {
         } catch (IOException e) {
             return;
         }
-        currentPrice = Double.parseDouble(WebScraper("value", marketwatch, 0));
+
+        currentPrice = Double.parseDouble(WebScraper("value", marketwatch, 0).replaceAll("," , ""));
+        openingPrice = Double.parseDouble(WebScraper("kv__value kv__primary ", marketwatch, 0)
+                    .substring(1).replaceAll(",",""));
         pointsChange = Double.parseDouble(WebScraper("change--point--q", marketwatch, 0));
         percentChange = Double.parseDouble(WebScraper("change--percent--q", marketwatch, 0).substring(0,4));
         name = WebScraper("company__name", marketwatch, 0);
-        openingPrice = Double.parseDouble(WebScraper("kv__value kv__primary ", marketwatch, 0).substring(1));
         dayRange = WebScraper("kv__value kv__primary ", marketwatch, 1);
         yearRange = WebScraper("kv__value kv__primary " , marketwatch, 2);
         marketCap = WebScraper("kv__value kv__primary ", marketwatch, 3);
