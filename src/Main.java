@@ -108,6 +108,23 @@ public class Main extends Application {
         headlineData.add(change,0,2);
         headlineData.add(update,0,3);
 
+        // Info of searched stock
+        GridPane stockInfo = new GridPane();
+        stockInfo.setVgap(5);
+        Text openingPrice = new Text();
+        Text dayRange = new Text();
+        Text yearRange = new Text();
+        Text marketCap = new Text();
+        Text dividend = new Text();
+        Text sharesOutstanding = new Text();
+
+        stockInfo.add(openingPrice,0,0);
+        stockInfo.add(dayRange,0,1);
+        stockInfo.add(yearRange,0,2);
+        stockInfo.add(marketCap,0,3);
+        stockInfo.add(dividend,0,4);
+        stockInfo.add(sharesOutstanding,0,5);
+
         // Refresh Button
         Button refresh = new Button("Refresh");
         refresh.setOnAction(new EventHandler<ActionEvent>() {
@@ -150,11 +167,21 @@ public class Main extends Application {
                 lastUpdatedTime.setText(TimeFormatter(currTime));
                 lastUpdatedText.setText("Last Updated: ");
                 name.setText(stock.name);
+
+                openingPrice.setText(Double.toString(stock.openingPrice));
+                dayRange.setText(stock.dayRange);
+                yearRange.setText(stock.yearRange);
+                marketCap.setText(stock.marketCap);
+                dividend.setText(stock.dividend);
+                sharesOutstanding.setText(stock.sharesOutstanding);
             }
         });
         info.add(refresh, 0, 3);
 
-        //Table of Info
+        // Add stock to User stocks
+        Button AddButton = new Button("Add Stock");
+
+        //Table of User stocks
         TableView table = new TableView();
         final Label label = new Label("Portfolio");
 
@@ -173,6 +200,7 @@ public class Main extends Application {
         root.add(headlineData,1,0);
         root.add(dataChart, 2, 0);
         root.add(table, 0, 1);
+        root.add(stockInfo,1,1);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("style.css");
