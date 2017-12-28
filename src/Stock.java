@@ -89,9 +89,17 @@ public class Stock {
         String delims = "[ ]";
         String[] coords = path.split(delims);
 
-        XYChart.Series rtn = new XYChart.Series();
+        double max=0;
         for (int i = 0; i < coords.length-9; i+=3) {
-            rtn.getData().add(new XYChart.Data(Double.parseDouble(coords[i+1]), Double.parseDouble(coords[i+2])));
+            double num = Double.parseDouble(coords[i+2]);
+            if (num > max) {
+                max = num;
+            }
+        }
+        XYChart.Series rtn = new XYChart.Series();
+        rtn.setName(ticker);
+        for (int i = 0; i < coords.length-9; i+=3) {
+            rtn.getData().add(new XYChart.Data(Double.parseDouble(coords[i+1]), max - Double.parseDouble(coords[i+2])));
         }
 
         return rtn;

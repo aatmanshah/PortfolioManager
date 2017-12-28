@@ -34,7 +34,7 @@ public class Main extends Application {
         GridPane info = new GridPane();
         info.setVgap(10);
         info.setHgap(10);
-        info.setAlignment(Pos.CENTER_LEFT);
+        info.setAlignment(Pos.CENTER);
         info.setPadding(new Insets(10,10,10,10));
 
         // TEXT objects
@@ -44,6 +44,7 @@ public class Main extends Application {
 
         // TEXT FIELDS
         TextField stockID = new TextField();
+        stockID.setMinWidth(150);
         TextField numStocks = new TextField();
         TextField initialPrice = new TextField();
 
@@ -58,8 +59,14 @@ public class Main extends Application {
         // TODO Data Input and Scraping
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Value");
+        yAxis.setMinorTickVisible(false);
+        yAxis.setTickMarkVisible(false);
+        yAxis.setTickLabelsVisible(false);
         NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel("Time");
+        xAxis.setMinorTickVisible(false);
+        xAxis.setTickMarkVisible(false);
+        xAxis.setTickLabelsVisible(false);
         LineChart dataChart = new LineChart(xAxis,yAxis);
         dataChart.setMaxSize(500, 200);
         dataChart.setCreateSymbols(false);
@@ -189,10 +196,29 @@ public class Main extends Application {
         });
         info.add(refresh, 0, 3);
 
+        // Clear Button
+        Button clearButton = new Button("Clear");
+        clearButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                stockID.setText("");
+                numStocks.setText("");
+                initialPrice.setText("");
+                if (dataChart.getData().size() > 0) {
+                    int size = dataChart.getData().size();
+                    dataChart.getData().remove(0,size);
+                }
+            }
+        });
+
         // Add stock to User stocks
         Button addButton = new Button("Add to Portfolio");
-        info.add(addButton, 1, 3);
 
+        GridPane addClear = new GridPane();
+        addClear.setHgap(10);
+        addClear.add(addButton, 1, 0);
+        addClear.add(clearButton, 0, 0);
+        info.add(addClear, 1, 3);
 
         //Table of User stocks
         TableView table = new TableView();
@@ -203,17 +229,45 @@ public class Main extends Application {
         TableColumn tickerCol = new TableColumn("Stock Ticker");
         tickerCol.setMinWidth(100);
         tickerCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("name"));
-        
+
+        TableColumn shareCol = new TableColumn("Shares");
+        shareCol.setMinWidth(100);
+        shareCol.setCellValueFactory(new PropertyValueFactory<Stock, String>(numStocks.getText()));
+
+        TableColumn initPriceCol = new TableColumn("Buy Price");
+        initPriceCol.setMinWidth(100);
+        initPriceCol.setCellValueFactory(new PropertyValueFactory<Stock, String>(initialPrice.getText()));
+
+        TableColumn currentPriceCol = new TableColumn("Current Price");
+        currentPriceCol.setMinWidth(100);
+        currentPriceCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("current price"));
+
+        TableColumn percentChangeCol = new TableColumn("% Change");
+        percentChangeCol.setMinWidth(100);
+        percentChangeCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("percent change"));
+
+        TableColumn unrealizedCol = new TableColumn("UR L/G");
+        unrealizedCol.setMinWidth(100);
+        unrealizedCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("ur l/g"));
+
         table.getColumns().addAll(tickerCol);
+        table.getColumns().addAll(shareCol);
+        table.getColumns().addAll(initPriceCol);
+        table.getColumns().addAll(currentPriceCol);
+        table.getColumns().addAll(percentChangeCol);
 
         // root GRIDPANE
         GridPane root = new GridPane();
+        GridPane top = new GridPane();
+        GridPane bottom = new GridPane();
+        root.add(top, 0,0);
+        root.add(bottom, 0,1);
         root.setMinSize(1000,500);
-        root.add(info,0,0);
-        root.add(headlineData,1,0);
-        root.add(dataChart, 2, 0);
-        root.add(table, 0, 1);
-        root.add(stockInfo,1,1);
+        top.add(info,0,0);
+        top.add(headlineData,1,0);
+        top.add(dataChart, 2, 0);
+        bottom.add(table, 0, 0);
+        bottom.add(stockInfo,1,0);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("style.css");
