@@ -1,3 +1,4 @@
+import javafx.scene.chart.XYChart;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,6 +23,8 @@ public class Stock {
     String marketCap;
     String dividend;
     String sharesOutstanding;
+    String stockExchange;
+    XYChart.Series chartData;
 
     Stock(String tick) {
         ticker = tick;
@@ -45,6 +48,9 @@ public class Stock {
         marketCap = WebScraper("kv__value kv__primary ", marketwatch, 3);
         sharesOutstanding = WebScraper("kv__value kv__primary ", marketwatch, 4);
         dividend = WebScraper("Ta(end) Fw(b) Lh(14px)", yahoo, 13);
+        stockExchange = WebScraper("company__market", marketwatch, 0).substring(6);
+
+        chartData = WebScraperChartData(ticker, stockExchange);
     }
 
     /*
@@ -65,5 +71,29 @@ public class Stock {
             }
         }
         return "";
+    }
+
+    public static XYChart.Series WebScraperChartData(String ticker, String stockExchange) {
+        Document doc = null;
+        try {
+            doc = Jsoup.connect("https://www.google.com/search?tbm=fin&q="+stockExchange+":+"+ticker).get();
+        } catch (IOException e) {
+            return null;
+        }
+        Elements val = doc.getElementsByClass("_FHs line-z0");
+        String path = "";
+        for (Element element : val) {
+            path = element.attr("d");
+        }
+
+        String delims = "[ ]";
+        String[] coords = path.split(delims);
+
+        XYChart.Series rtn = new XYChart.Series();
+        for (int i = 0; i < coords.length-9; i+=3) {
+            rtn.getData().add(new XYChart.Data(Double.parseDouble(coords[i+1]), Double.parseDouble(coords[i+2])));
+        }
+
+        return rtn;
     }
 }

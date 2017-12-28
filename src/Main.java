@@ -62,6 +62,7 @@ public class Main extends Application {
         xAxis.setLabel("Time");
         LineChart dataChart = new LineChart(xAxis,yAxis);
         dataChart.setMaxSize(500, 200);
+        dataChart.setCreateSymbols(false);
 
         // headlineData Pane
         GridPane headlineData = new GridPane();
@@ -111,6 +112,7 @@ public class Main extends Application {
         // Info of searched stock
         GridPane stockInfo = new GridPane();
         stockInfo.setVgap(5);
+        stockInfo.setPadding(new Insets(10,10,10,10));
         Text openingPrice = new Text();
         Text dayRange = new Text();
         Text yearRange = new Text();
@@ -181,6 +183,8 @@ public class Main extends Application {
                 marketCap.setText("Market Cap: " + stock.marketCap);
                 dividend.setText("Dividend & Yield: " + stock.dividend);
                 sharesOutstanding.setText("Shares Outstanding: " + stock.sharesOutstanding);
+
+                dataChart.getData().add(stock.chartData);
             }
         });
         info.add(refresh, 0, 3);
