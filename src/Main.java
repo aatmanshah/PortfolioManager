@@ -250,11 +250,24 @@ public class Main extends Application {
         unrealizedCol.setMinWidth(100);
         unrealizedCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("ur l/g"));
 
+        TableColumn totalInvestedCol = new TableColumn("Total Invested");
+        totalInvestedCol.setMinWidth(100);
+        totalInvestedCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("total invested"));
+
+        TableColumn totalURCol = new TableColumn("Total UR G/L");
+        totalURCol.setMinWidth(100);
+        totalURCol.setCellValueFactory(new PropertyValueFactory<Stock, String>("total ur l/g"));
+
         table.getColumns().addAll(tickerCol);
         table.getColumns().addAll(shareCol);
         table.getColumns().addAll(initPriceCol);
         table.getColumns().addAll(currentPriceCol);
         table.getColumns().addAll(percentChangeCol);
+        table.getColumns().addAll(unrealizedCol);
+        table.getColumns().addAll(totalInvestedCol);
+        table.getColumns().addAll(totalURCol);
+
+
 
         // root GRIDPANE
         GridPane root = new GridPane();
@@ -262,7 +275,7 @@ public class Main extends Application {
         GridPane bottom = new GridPane();
         root.add(top, 0,0);
         root.add(bottom, 0,1);
-        root.setMinSize(1000,500);
+        root.setMinSize(1200,500);
         top.add(info,0,0);
         top.add(headlineData,1,0);
         top.add(dataChart, 2, 0);
