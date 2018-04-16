@@ -7,6 +7,6 @@ Retrieves stock data from yahoo finance and marketwatch. Uses JSOUP webscraper t
 
 Future version plans:
 
--Implement local database to save user's portfolio information 
+-Implement local database to save user's portfolio information (SQlite)
 
 -Add deep learning model for stock price prediction using TensorFlow. Will scrape data for s&p 500 listings. 
